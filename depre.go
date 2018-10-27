@@ -7,6 +7,17 @@ import (
 	"strings"
 )
 
+//Dependencies tree
+type Dependencies struct {
+	dep string
+}
+
+//MavenPackage structure
+type MavenPackage struct {
+	rootPackage  string
+	dependencies []Dependencies
+}
+
 func main() {
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -16,10 +27,12 @@ func main() {
 
 		text := scanner.Text()
 
-		parts := strings.SplitAfter(text, "+-")
+		parts := strings.SplitAfter(text, "[INFO] +-")
 
 		for i := range parts {
+			parts[i] = strings.TrimLeft(parts[i], "[INFO] +-")
 			fmt.Println(parts[i])
+
 		}
 	}
 
