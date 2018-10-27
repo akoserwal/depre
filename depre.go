@@ -16,16 +16,11 @@ func main() {
 
 		text := scanner.Text()
 
-		//parts := strings.Split(text, "+-")
-
 		parts := strings.SplitAfter(text, "+-")
 
-		//	Loop over the parts from the string.
 		for i := range parts {
 			fmt.Println(parts[i])
 		}
-
-		//fmt.Println(text)
 	}
 
 }
