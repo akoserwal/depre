@@ -3,44 +3,48 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
+	"regexp"
 	"strings"
 )
-
-//Dependencies tree
-type Dependencies struct {
-	dep string
-}
-
-//MavenPackage structure
-type MavenPackage struct {
-	rootPackage  string
-	dependencies []Dependencies
-}
 
 func main() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 	checkError(scanner.Err())
+	var depMap = make(map[string]int)
 
 	for scanner.Scan() {
 
 		text := scanner.Text()
 
-		parts := strings.SplitAfter(text, "[INFO] +-")
+		reg, err := regexp.Compile("[^a-zA-Z0-9.:-]")
+		checkError(err)
 
-		for i := range parts {
-			parts[i] = strings.TrimLeft(parts[i], "[INFO] +-")
-			fmt.Println(parts[i])
+		processedString := reg.ReplaceAllString(text, "")
+		deps := strings.Split(processedString, "INFO")
 
+		for i := range deps {
+			if strings.HasPrefix(deps[i], "-") == true && strings.HasSuffix(deps[i], "compile") {
+				if depMap[deps[i]] == 0 {
+					depMap[deps[i]] = 1
+				} else {
+					depMap[deps[1]] = depMap[deps[1]] + 1
+				}
+			}
 		}
+	}
+
+	for k, v := range depMap {
+		fmt.Printf("dependency:[%s] occurance:[%d]\n", k, v)
 	}
 
 }
 
 func checkError(err error) {
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
+		log.Fatal(err)
 		os.Exit(1)
 	}
 }
