@@ -26,11 +26,13 @@ func main() {
 		deps := strings.Split(processedString, "INFO")
 
 		for i := range deps {
-			if strings.HasPrefix(deps[i], "-") == true && strings.HasSuffix(deps[i], "compile") {
-				if depMap[deps[i]] == 0 {
-					depMap[deps[i]] = 1
+			if strings.Contains(deps[i], "compile") || strings.Contains(deps[i], "test") {
+				value, ok := depMap[deps[i]]
+				if ok == true {
+					depMap[deps[i]] = value + 1
 				} else {
-					depMap[deps[1]] = depMap[deps[1]] + 1
+					depMap[deps[i]] = 1
+
 				}
 			}
 		}
